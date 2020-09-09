@@ -6,12 +6,12 @@ class UserFeed(Feed):
     def __init__(self, client, user_id):
         super().__init__(client)
         self.id = user_id
-        self.more_available = None
+        self.more_available = True
         self.next_max_id = None
 
     def set_state(self, request):
-        self.more_available = request['more_available']
-        self.next_max_id = request['next_max_id']
+        self.more_available = request.get('more_available')
+        self.next_max_id = request.get('next_max_id')
 
     async def request(self):
         options = {

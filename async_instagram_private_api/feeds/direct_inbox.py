@@ -12,7 +12,7 @@ class DirectInboxFeed(Feed):
     def set_state(self, response):
         self.more_available = response['inbox']['has_older']
         self.seq_id = response['seq_id']
-        self.cursor = response['inbox']['oldest_cursor']
+        self.cursor = response['inbox']['next_cursor']
 
     async def request(self):
         options = {
@@ -21,10 +21,10 @@ class DirectInboxFeed(Feed):
                 'visual_message_return_type': 'unseen',
                 # 'cursor': self.cursor,
                 'direction': 'older' if self.cursor else '',
-                'seq_id': self.seq_id,
-                'thread_message_limit': 10,
+                # 'seq_id': self.seq_id,
+                'thread_message_limit': '10',
                 'persistentBadging': 'true',
-                'limit': 20,
+                'limit': '20',
             },
         }
         if self.cursor:

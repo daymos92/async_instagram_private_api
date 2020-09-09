@@ -6,9 +6,11 @@ import pickle
 import random
 import time
 
-from async_instagram_private_api.exceptions import IgNotFoundError, IgCheckpointError, \
+from async_instagram_private_api.exceptions import IgNotFoundError, \
+    IgCheckpointError, \
     IgUserHasLoggedOutError, IgLoginRequiredError, IgPrivateUserError, \
-    IgSentryBlockError, IgInactiveUserError, IgResponseError
+    IgSentryBlockError, IgInactiveUserError, IgResponseError, \
+    IgRequestsLimitError
 from async_instagram_private_api.tools import dict_merge
 
 
@@ -19,7 +21,7 @@ class Request:
     async def send(self, **kwargs):
         host = 'https://i.instagram.com'
         options = {
-            'proxy': self.client.state.proxy_url,
+            'proxy': self.client.state.proxy,
             'method': 'GET',
             'headers': self.get_default_headers()
         }
@@ -47,14 +49,17 @@ class Request:
         }
 
     async def handle_response_error(self, response):
-        json_response = await response.json()
-
         #     if (json.spam) {
         #       return new IgActionSpamError(response);
         #     }
 
         if response.status == 404:
             raise IgNotFoundError(response)
+        if response.status == 429:
+            raise IgRequestsLimitError
+        if response.status // 100 == 5:
+            raise IgResponseError(response)
+        json_response = await response.json()
 
         message = json_response.get('message')
         if message:

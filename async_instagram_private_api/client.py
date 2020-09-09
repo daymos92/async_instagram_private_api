@@ -9,6 +9,7 @@ from async_instagram_private_api.repositories.discover import DiscoverRepository
 from async_instagram_private_api.repositories.fbsearch import FbSearchRepository
 from async_instagram_private_api.repositories.launcher import LauncherRepository
 from async_instagram_private_api.repositories.linked_account import LinkedAccountRepository
+from async_instagram_private_api.repositories.location import LocationRepository
 from async_instagram_private_api.repositories.loom import LoomRepository
 from async_instagram_private_api.repositories.media import MediaRepository
 from async_instagram_private_api.repositories.qe import QeRepository
@@ -21,7 +22,7 @@ from async_instagram_private_api.services.simulate import SimulateService
 
 class IgApiClient:
 
-    def __init__(self, settings):
+    def __init__(self, settings=None):
         self.state = State(settings)
         self.request = Request(self)
         self.feed = FeedFactory(self)
@@ -49,7 +50,7 @@ class IgApiClient:
         self.user = UserRepository(self)
         self.zr = ZrRepository(self)
         #   public live = new LiveRepository(this);
-        #   public location = new LocationRepository(this);
+        self.location = LocationRepository(self)
         #   public locationSearch = new LocationSearch(this);
         #   public music = new MusicRepository(this);
         #   public news = new NewsRepository(this);

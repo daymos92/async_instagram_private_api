@@ -17,7 +17,7 @@ class QeRepository(Repository):
             data = {
                 'id': self.client.state.uuid
             }
-        data.update(experiments)
+        data['experiments'] = experiments
 
         options = {
             'method': 'POST',
@@ -31,7 +31,7 @@ class QeRepository(Repository):
         return response
 
     async def sync_experiments(self):
-        return self.sync(self.client.state.experiments)
+        return await self.sync(self.client.state.experiments)
 
     async def sync_login_experiments(self):
-        return self.sync(self.client.state.login_experiments)
+        return await self.sync(self.client.state.login_experiments)

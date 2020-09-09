@@ -18,7 +18,8 @@ class UserRepository(Repository):
         response = await self.client.request.send(**options)
         return response
 
-    async def info(self, user_id):
+    async def info(self, user_id=None):
+        user_id = user_id or self.client.state.cookie_user_id
         options = {
             'url': f'/api/v1/users/{user_id}/info/'
         }

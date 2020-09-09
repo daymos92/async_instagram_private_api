@@ -17,10 +17,10 @@ from ..samples.devices import DEVICES
 class ClientCookieJar(CookieJar):
     """Custom CookieJar that can be pickled to/from strings
     """
-    def __init__(self, cookie_string=None, **kwargs):
+    def __init__(self, cookie=None, **kwargs):
         CookieJar.__init__(self, **kwargs)
-        if cookie_string:
-            self._cookies = pickle.loads(codecs.decode(cookie_string.encode(), "base64"))
+        if cookie:
+            self._cookies = pickle.loads(codecs.decode(cookie.encode(), "base64"))
 
     def dump(self):
         return codecs.encode(pickle.dumps(self._cookies), "base64").decode()
@@ -32,10 +32,11 @@ class State:
         if settings is None:
             settings = {}
 
-        self.proxy_url = settings.get('proxy_url') or None
+        self.username = settings.get('username') or None
+        self.proxy = settings.get('proxy') or None
         self.limit_connector = settings.get('limit_connector') or 5
         self.timeout = settings.get('timeout') or 5
-        self.cookie_string = settings.get('cookie_string') or None
+        self.cookie = settings.get('cookie') or None
         self.checkpoint = settings.get('checkpoint') or None
         self.challenge = settings.get('challenge') or None
 
@@ -62,8 +63,8 @@ class State:
         self.ig_www_claim = settings.get('ig_www_claim') or None
         self.authorization = settings.get('authorization') or None
 
-        if self.cookie_string:
-            cookie_jar = ClientCookieJar(self.cookie_string)
+        if self.cookie:
+            cookie_jar = ClientCookieJar(self.cookie)
         else:
             cookie_jar = ClientCookieJar()
         connector = aiohttp.TCPConnector(verify_ssl=False, limit=self.limit_connector)
@@ -75,7 +76,8 @@ class State:
     @property
     def settings(self):
         settings = {
-            'proxy_url': self.proxy_url,
+            'username': self.username,
+            'proxy': self.proxy,
             'limit_connector': self.limit_connector,
             'timeout': self.timeout,
             'checkpoint': self.checkpoint,
@@ -102,7 +104,7 @@ class State:
             'ig_www_claim': self.ig_www_claim,
             'authorization': self.authorization,
 
-            'cookie_string': self.session.cookie_jar.dump(),
+            'cookie': self.session.cookie_jar.dump(),
         }
         return settings
 

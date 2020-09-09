@@ -10,7 +10,7 @@ class DirectRepository(Repository):
             'params': {
                 'mode': mode,
                 'query': query,
-                'show_threads': True,
+                'show_threads': 'true',
             }
         }
         response = await self.client.request.send(**options)

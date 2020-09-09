@@ -17,8 +17,8 @@ class AccountRepository(Repository):
         if not self.client.state.password_encryption_pub_key:
             self.client.qe.sync_login_experiments()
 
-        encrypted, time = self.encrypt_password(password)
-
+        # encrypted, time = self.encrypt_password(password)
+        self.client.state.username = username
         options = {
             'method': 'POST',
             'url': '/api/v1/accounts/login/',

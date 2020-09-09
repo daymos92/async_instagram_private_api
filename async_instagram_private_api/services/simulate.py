@@ -31,8 +31,6 @@ class SimulateService(Repository):
             self.client.attribution.log_resurrect_attribution(),
             self.client.loom.fetch_config(),
             self.client.linkedAccount.get_linkage_status(),
-            # // () => this.client.creatives.writeSupportedCapabilities(),
-            # // () => this.client.account.processContactPointSignals(),
             self.client.feed.timeline().request({'recovered_from_crash': '1', 'reason': 'cold_start_fetch'}),
             self.client.fbsearch.suggested_searches('users'),
             self.client.fbsearch.suggested_searches('blended'),
@@ -42,7 +40,7 @@ class SimulateService(Repository):
             self.client.direct.get_presence(),
             self.client.feed.direct_inbox().request(),
             self.client.media.blocked(),
-            self.client.qp.batch_fetch(),
+            # self.client.qp.batch_fetch(),
             self.client.qp.get_cooldowns(),
             self.client.user.arlink_download_info(),
             self.client.discover.topical_explore(),
@@ -57,8 +55,10 @@ class SimulateService(Repository):
             random.shuffle(requests)
 
         for request in requests:
-            response = await request
-            pass
+            try:
+                await request
+            except Exception as e:
+                print(request, e)
 
     async def pre_login_flow(self, to_shuffle=True):
         await self._execute_request_flow(self.pre_login_flow_requests(), to_shuffle)

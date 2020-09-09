@@ -31,6 +31,13 @@ class IgNotFoundError(IgResponseError):
     pass
 
 
+class IgRequestsLimitError(IgClientError):
+
+    def __init__(self):
+        message = "You just made too many request to instagram API"
+        super(IgRequestsLimitError, self).__init__(message)
+
+
 class IgCheckpointError(IgResponseError):
 
     def url(self):

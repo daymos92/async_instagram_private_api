@@ -13,7 +13,7 @@ class TimelineFeed(Feed):
         self.next_max_id = response['next_max_id']
 
     async def request(self, form_options):
-        form = {
+        data = {
             'is_prefetch': '0',
             'feed_view_info': '',
             'seen_posts': '',
@@ -37,12 +37,12 @@ class TimelineFeed(Feed):
         }
 
         if self.next_max_id:
-            form.update({
+            data.update({
                 'max_id': self.next_max_id,
                 'reason': form_options.get('reason') or 'pagination'
             })
         else:
-            form.update({
+            data.update({
                 'reason': form_options.get('reason') or self.reason,
                 'is_pull_to_refresh': '1' if self.reason == 'is_pull_to_refresh' else '0'
             })
@@ -51,12 +51,12 @@ class TimelineFeed(Feed):
             'url': '/api/v1/feed/timeline/',
             'method': 'POST',
             'headers': {
-                'X-Ads-Opt-Out': 0,
+                'X-Ads-Opt-Out': '0',
                 'X-Google-AD-ID': self.client.state.adid,
                 'X-DEVICE-ID': self.client.state.uuid,
-                'X-FB': 1,
+                'X-FB': '1',
             },
-            'form': form,
+            'data': data,
         }
         response = await self.client.request.send(**options)
         self.set_state(response)

@@ -6,12 +6,12 @@ class DiscoverRepository(Repository):
         options = {
             'url': '/api/v1/discover/topical_explore/',
             'params': {
-                'is_prefetch': True,
-                'omit_cover_media': False,
-                'use_sectional_payload': True,
+                'is_prefetch': 'true',
+                'omit_cover_media': 'false',
+                'use_sectional_payload': 'true',
                 'timezone_offset': self.client.state.timezone_offset,
                 'session_id': self.client.state.client_session_id,
-                'include_fixed_destinations': False,
+                'include_fixed_destinations': 'false',
             }
         }
         response = await self.client.request.send(**options)
