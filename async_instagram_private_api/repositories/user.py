@@ -26,9 +26,24 @@ class UserRepository(Repository):
         response = await self.client.request.send(**options)
         return response.get('user')
 
-#   async info(id: string | number): Promise<UserRepositoryInfoResponseUser> {
-#     const { body } = await this.client.request.send<UserRepositoryInfoResponseRootObject>({
-#       url: `/api/v1/users/${id}/info/`,
-#     });
-#     return body.user;
-#   }
+    async def search(self, username: str):
+        options = {
+            'url': f'/api/v1/users/search/',
+            'params': {
+                'timezone_offset': self.client.state.timezone_offset,
+                'q': username,
+                'count': 30,
+            }
+        }
+        response = await self.client.request.send(**options)
+        return response
+
+    async def search_exact(self, username: str):
+        username = username.lower()
+        users = await self.search(username)
+        if not users['users']:
+            return None
+        for user in users['users']:
+            if user['username'] == username:
+                return user
+        return None
