@@ -7,6 +7,7 @@ setup(
     url='',
     install_requires=[
         'pycryptodome:3.9.8',
+        'aiohttp:3.5.4',
     ],
     license='Apache 2.0',
     author='Sergey Bespalov',
